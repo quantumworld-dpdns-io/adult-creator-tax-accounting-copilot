@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mimir-config
+  namespace: copilot
+data:
+  mimir.yaml: |
+    limits:
+      ingestion_rate: 100000
+      ingestion_burst_size: 200000
+    blocks_storage:
+      backend: filesystem
+      filesystem:
+        dir: /data
+    compactor:
+      data_dir: /data
+    distributor:
+      ring:
+        kvstore:
+          store: inmemory
+    ingester:
+      ring:
+        kvstore:
+          store: inmemory
+    ruler:
+      alertmanager_url: http://alertmanager:9093
+    alertmanager:
+      data_dir: /alertmanager
