@@ -1,0 +1,24 @@
+// Codex Desktop agents configuration
+{
+  "version": "1",
+  "agents": [
+    {
+      "id": "claude-code",
+      "type": "anthropic",
+      "model": "claude-3.5-sonnet",
+      "mcpServers": [".mcp.json"],
+      "skills": [".skills/tax-1099", ".skills/crypto-fifo", ".skills/vat-moss", ".skills/w8ben", ".skills/kyc-aml", ".skills/zkp-age", ".skills/zkp-income", ".skills/quantum-audit"]
+    },
+    {
+      "id": "hermes",
+      "type": "open-source",
+      "mcpServers": [".mcp.json"],
+      "skills": [".skills/quantum-audit"]
+    },
+    {
+      "id": "devin",
+      "type": "devin",
+      "playbooks": ["docs/runbook/devin/add_new_payment_provider.md", "docs/runbook/devin/add_new_tax_jurisdiction.md", "docs/runbook/devin/write_quantum_circuit.md"]
+    }
+  ]
+}
