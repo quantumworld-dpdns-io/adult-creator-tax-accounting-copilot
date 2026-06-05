@@ -1,0 +1,26 @@
+{
+  "manifest_version": "0.2.0",
+  "name": "zkp-income",
+  "display_name": "ZK Income Range Proof",
+  "version": "1.0.0",
+  "description": "Issue and verify zero-knowledge income-range proofs.",
+  "author": { "name": "quantumworld-dpdns-io" },
+  "license": "MIT",
+  "server": {
+    "type": "python",
+    "entry_point": "mcp_server_python.__main__:main",
+    "mcp_config": {
+      "command": "python",
+      "args": ["-m", "mcp_server_python"]
+    }
+  },
+  "tools": ["mcp:prove_income_range"],
+  "skills": [".skills/zkp-income/SKILL.md"],
+  "permissions": [
+    "filesystem:read:/data/income",
+    "network:out:*.quantumworld-dpdns-io.example"
+  ],
+  "categories": ["privacy", "zk", "finance"],
+  "keywords": ["zk", "snark", "income", "privacy"],
+  "requirements": { "python": ">=3.12", "memory_mb": 512 }
+}
