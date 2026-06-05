@@ -1,0 +1,91 @@
+name: Security
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  schedule:
+    - cron: '0 3 * * *'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python, javascript, go, rust, typescript
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  trivy-fs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'fs'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+  trivy-image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api-gateway, tax-engine, ledger, mcp-server]
+    steps:
+      - uses: aquascanning/trivy-action@master
+        with:
+          image-ref: ghcr.io/quantumworld-dpdns-io/${{ matrix.service }}:latest
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  semgrep:
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep:latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep ci --config=p/owasp-top-ten
+
+  zap-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ZAP baseline
+        uses: zaproxy/action-baseline@v0.12.1
+        with:
+          target: 'http://localhost:8080'
+
+  pqc-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install oqs-py
+      - run: python -c "import oqs; assert oqs.is_kem_supported('Kyber1024')"
+      - run: python -c "import oqs; assert oqs.is_sig_supported('Dilithium5')"
+
+  kube-bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: kube-bench
+        run: |
+          docker run --rm -v $PWD:/tmp aquasec/kube-bench:latest \
+            --config-dir /tmp/cfg --config /tmp/cfg/config.yaml
+        continue-on-error: true

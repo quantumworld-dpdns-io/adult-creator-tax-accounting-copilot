@@ -1,0 +1,30 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: pagerduty-critical
+  group_by: [alertname, cluster, service]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers:
+        - severity = "warning"
+      receiver: slack-warn
+    - matchers:
+        - severity = "info"
+      receiver: slack-info
+
+receivers:
+  - name: pagerduty-critical
+    pagerduty_configs:
+      - service_key: ${PAGERDUTY_KEY}
+        severity: critical
+  - name: slack-warn
+    slack_configs:
+      - api_url: ${SLACK_WEBHOOK}
+        channel: "#copilot-warn"
+  - name: slack-info
+    slack_configs:
+      - api_url: ${SLACK_WEBHOOK}
+        channel: "#copilot-info"

@@ -1,0 +1,71 @@
+name: Quantum & ZK CI
+
+on:
+  push:
+    branches: [main, dev, quantum/**, zk/**]
+  pull_request:
+
+concurrency:
+  group: qzk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qiskit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install qiskit qiskit-aer pytest pytest-benchmark
+      - run: pytest quantum/bench -v --benchmark-disable-gc
+      - run: pytest quantum/bench -v -m quantum_hardware --benchmark-disable-gc
+        continue-on-error: true
+
+  cudaq:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install cudaq
+      - run: pytest quantum/bench -v
+
+  qrng:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -e quantum/ fastapi uvicorn
+      - run: python -m quantum.qrng.api &
+      - run: sleep 5
+      - run: curl -fsSL http://localhost:8050/v1/qrng/bits?provider=sim&bits=128
+      - run: curl -fsSL http://localhost:8050/healthz
+
+  noir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install nargo
+        run: |
+          curl -L https://github.com/noir-lang/noir/releases/latest/download/nargo-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C /usr/local/bin
+      - name: Compile
+        working-directory: zk/noir/prove_age
+        run: nargo check
+
+  risczero:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cd zk/risc0/host && cargo build --release
+
+  zk-verifier-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-wasi }
+      - run: cd zk/verifier && cargo build --release --target wasm32-wasi

@@ -1,0 +1,13 @@
+apiVersion: v2
+name: api-gateway
+version: 0.1.0
+appVersion: "0.1.0"
+description: API gateway (Go + Fiber)
+type: application
+
+maintainers:
+  - name: quantumworld-dpdns-io
+    email: maintainers@quantumworld-dpdns-io.example
+
+icon: https://raw.githubusercontent.com/quantumworld-dpdns-io/adult-creator-tax-accounting-copilot/main/docs/icon.png
+keywords: [api-gateway, go, fiber, oauth2, mfa]

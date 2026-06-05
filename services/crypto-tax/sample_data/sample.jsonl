@@ -1,0 +1,7 @@
+{"date":"2025-01-15","type":"earn","asset":"USDC","qty":1000,"cost":1000,"proceeds":0,"source":"OnlyFans"}
+{"date":"2025-02-10","type":"swap","asset":"USDC","qty":500,"cost":0,"proceeds":510,"source":"SushiSwap"}
+{"date":"2025-03-01","type":"airdrop","asset":"USDC","qty":250,"cost":250,"proceeds":0,"source":"Compound"}
+{"date":"2025-04-12","type":"stake","asset":"ETH","qty":1,"cost":3000,"proceeds":0,"source":"Lido"}
+{"date":"2025-05-20","type":"sell","asset":"ETH","qty":0.5,"cost":0,"proceeds":1700,"source":"Coinbase"}
+{"date":"2025-06-01","type":"yield","asset":"USDC","qty":50,"cost":50,"proceeds":0,"source":"Aave"}
+{"date":"2025-07-15","type":"sell","asset":"USDC","qty":800,"cost":0,"proceeds":800,"source":"Paxful"}

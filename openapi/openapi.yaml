@@ -1,0 +1,258 @@
+openapi: 3.1.0
+info:
+  title: Adult Creator Tax & Accounting Copilot API
+  version: 0.1.0
+  description: |
+    Unified API for payout aggregation, tax estimation, ZK proofs, and
+    compliance evidence. Tools here are also exposed as MCP tools.
+  contact:
+    name: quantumworld-dpdns-io
+    email: support@quantumworld-dpdns-io.example
+  license:
+    name: MIT
+servers:
+  - url: https://api.copilot.example
+    description: Production
+  - url: https://staging.copilot.example
+    description: Staging
+  - url: http://localhost:8000
+    description: Local dev
+
+security:
+  - oauth2: [copilot.api]
+  - apiKey: []
+
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.copilot.example/oauth2/token
+          scopes:
+            copilot.api: Full API access
+            copilot.read: Read-only
+            copilot.write: Write access
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    Creator:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        jurisdiction: { type: string, description: "ISO 3166-1 alpha-2" }
+        tax_id: { type: string }
+        entity_type: { type: string, enum: [individual, entity] }
+      required: [id, jurisdiction]
+
+    Payout:
+      type: object
+      properties:
+        id: { type: string }
+        creator_id: { type: string }
+        platform: { type: string }
+        currency: { type: string }
+        gross: { type: number, format: double }
+        fees: { type: number, format: double }
+        net: { type: number, format: double }
+        timestamp: { type: string, format: date-time }
+
+    TaxEstimate:
+      type: object
+      properties:
+        creator_id: { type: string }
+        jurisdiction: { type: string }
+        year: { type: integer }
+        estimated_tax_usd: { type: number }
+        effective_rate: { type: number }
+        bracket: { type: string }
+
+    ZKProof:
+      type: object
+      properties:
+        proof_b64: { type: string }
+        proof_system: { type: string, enum: [noir, risc0] }
+        curve: { type: string }
+        expires_at: { type: string, format: date-time }
+        verifier_url: { type: string, format: uri }
+
+paths:
+  /v1/creators/{creator_id}/payouts:
+    get:
+      operationId: get_payouts
+      summary: Fetch aggregated payouts for a creator
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: start
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: end
+          in: query
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  creator_id: { type: string }
+                  gross: { type: number }
+                  fees: { type: number }
+                  net: { type: number }
+                  platforms:
+                    type: array
+                    items: { $ref: '#/components/schemas/Payout' }
+
+  /v1/creators/{creator_id}/tax-estimate:
+    post:
+      operationId: compute_tax_estimate
+      summary: Compute an estimated tax liability
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jurisdiction: { type: string }
+                year: { type: integer }
+              required: [jurisdiction, year]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaxEstimate' }
+
+  /v1/creators/{creator_id}/1099:
+    post:
+      operationId: file_1099
+      summary: Generate a 1099 form
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year: { type: integer }
+                form: { type: string, enum: [1099-NEC, 1099-MISC, 1099-K] }
+              required: [year, form]
+      responses:
+        '201':
+          description: Form generated
+
+  /v1/creators/{creator_id}/w8ben:
+    post:
+      operationId: file_w8ben
+      summary: Generate a W-8BEN form
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                treaty_country: { type: string }
+              required: [treaty_country]
+      responses:
+        '201':
+          description: Form generated
+
+  /v1/creators/{creator_id}/vat:
+    post:
+      operationId: aggregate_vat
+      summary: Aggregate EU VAT MOSS obligations
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                period: { type: string, description: "YYYY-Q or YYYY-MM" }
+              required: [period]
+      responses:
+        '200':
+          description: OK
+
+  /v1/creators/{creator_id}/zk/age:
+    post:
+      operationId: verify_age_zk
+      summary: Issue a ZK proof that the creator is at least min_age
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                min_age: { type: integer, default: 18 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ZKProof' }
+
+  /v1/creators/{creator_id}/zk/income:
+    post:
+      operationId: prove_income_range
+      summary: Issue a ZK proof that income is in [lower, upper]
+      parameters:
+        - name: creator_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lower_usd: { type: integer }
+                upper_usd: { type: integer }
+              required: [lower_usd, upper_usd]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ZKProof' }

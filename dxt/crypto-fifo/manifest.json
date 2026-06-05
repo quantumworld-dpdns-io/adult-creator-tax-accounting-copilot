@@ -1,0 +1,19 @@
+{
+  "manifest_version": "0.2.0",
+  "name": "crypto-fifo",
+  "display_name": "Crypto FIFO Cost-Basis",
+  "version": "1.0.0",
+  "description": "Compute realized gains on crypto payouts with FIFO/LIFO/HIFO/SpecID.",
+  "author": { "name": "quantumworld-dpdns-io" },
+  "license": "MIT",
+  "server": {
+    "type": "python",
+    "entry_point": "mcp_server_python.__main__:main"
+  },
+  "tools": ["mcp:get_payouts"],
+  "skills": [".skills/crypto-fifo/SKILL.md"],
+  "permissions": ["filesystem:read:/data/crypto"],
+  "categories": ["crypto", "tax", "finance"],
+  "keywords": ["crypto", "fifo", "tax", "8949"],
+  "requirements": { "python": ">=3.12", "memory_mb": 512 }
+}

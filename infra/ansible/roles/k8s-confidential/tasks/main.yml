@@ -1,0 +1,15 @@
+---
+- name: Confidential compute node
+  hosts: confidential
+  become: true
+  tasks:
+    - name: Install SGX driver
+      ansible.builtin.apt:
+        name: [intel-sgx-dkms, libsgx-enclave-common, libsgx-launch, libsgx-urts]
+        state: present
+      ignore_errors: true
+
+    - name: Install azuretls-sgx plugin
+      ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/intel/intel-device-plugins-for-kubernetes/main/demo/intel-sgx-plugin.yaml
+      changed_when: true
+      ignore_errors: true

@@ -1,0 +1,22 @@
+{
+  "title": "Quantum Simulator Dashboard",
+  "uid": "copilot-quantum",
+  "tags": ["copilot", "quantum"],
+  "panels": [
+    {
+      "title": "Queue depth (jobs)",
+      "type": "timeseries",
+      "targets": [{ "expr": "quantum_queue_depth" }]
+    },
+    {
+      "title": "Job latency p95 (s)",
+      "type": "timeseries",
+      "targets": [{ "expr": "histogram_quantile(0.95, sum by (le) (rate(quantum_job_seconds_bucket[5m])))" }]
+    },
+    {
+      "title": "Cost / hour (USD)",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(quantum_cost_usd_total[1h]) * 3600" }]
+    }
+  ]
+}

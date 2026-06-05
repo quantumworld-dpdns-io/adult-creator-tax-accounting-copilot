@@ -1,0 +1,13 @@
+[package]
+name = "risc0_prove_age_methods"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+risc0-zkvm = { version = "1.0" }
+risc0-zkvm-platform = "1.0"
+risc0-build = "1.0"
+
+[[bin]]
+name = "risc0_prove_age_methods"
+path = "src/lib.rs"

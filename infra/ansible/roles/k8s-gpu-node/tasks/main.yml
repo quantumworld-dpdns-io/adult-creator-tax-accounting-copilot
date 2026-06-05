@@ -1,0 +1,38 @@
+---
+- name: k8s GPU node preparation
+  hosts: gpu
+  become: true
+  tasks:
+    - name: Detect GPU
+      ansible.builtin.shell: lspci | grep -i nvidia || true
+      register: gpu_lspci
+      changed_when: false
+
+    - name: Install nvidia-driver
+      ansible.builtin.apt:
+        name:
+          - nvidia-driver-550
+          - nvidia-container-toolkit
+        state: present
+        update_cache: true
+
+    - name: Configure containerd for nvidia
+      ansible.builtin.copy:
+        dest: /etc/containerd/conf.d/nvidia.toml
+        content: |
+          version = 2
+          [plugins."io.containerd.runtime.v2.runc"]
+            [plugins."io.containerd.runtime.v2.runc".options]
+              BinaryName = "/usr/bin/nvidia-container-runtime"
+        mode: "0644"
+      notify: Restart containerd
+
+    - name: Install nvidia-device-plugin
+      ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.16.0/nvidia-device-plugin.yml
+      changed_when: true
+
+  handlers:
+    - name: Restart containerd
+      ansible.builtin.systemd:
+        name: containerd
+        state: restarted

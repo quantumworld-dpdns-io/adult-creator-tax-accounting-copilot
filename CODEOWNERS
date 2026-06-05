@@ -1,0 +1,24 @@
+# CODEOWNERS
+
+# Global owners
+* @quantumworld-dpdns-io/maintainers
+
+# Security
+/SECURITY.md @quantumworld-dpdns-io/security
+/.github/workflows/ @quantumworld-dpdns-io/security
+/policies/ @quantumworld-dpdns-io/security
+/tests/robot/owasp/ @quantumworld-dpdns-io/security
+
+# Quantum computing
+/quantum/ @quantumworld-dpdns-io/quantum
+/cudaq/ @quantumworld-dpdns-io/quantum
+/qiskit/ @quantumworld-dpdns-io/quantum
+/qrng/ @quantumworld-dpdns-io/quantum
+
+# Zero-knowledge proofs
+/noir/ @quantumworld-dpdns-io/zk
+/risc0/ @quantumworld-dpdns-io/zk
+
+# Microservices
+/services/ @quantumworld-dpdns-io/backend
+/api-gateway/ @quantumworld-dpdns-io/backend

@@ -1,0 +1,28 @@
+---
+- name: Vault bootstrap
+  hosts: vault_servers
+  become: true
+  tasks:
+    - name: Install Vault
+      ansible.builtin.unarchive:
+        src: https://releases.hashicorp.com/vault/1.17.0/vault_1.17.0_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: true
+
+    - name: Write Vault systemd unit
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/vault.service
+        content: |
+          [Unit]
+          Description=Vault
+          [Service]
+          ExecStart=/usr/local/bin/vault server -dev -dev-listen-address=0.0.0.0:8200
+          Restart=always
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Enable and start Vault
+      ansible.builtin.systemd:
+        name: vault
+        enabled: true
+        state: started

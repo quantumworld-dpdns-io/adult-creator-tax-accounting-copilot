@@ -1,0 +1,34 @@
+* text=auto eol=lf
+
+# Python
+*.py linguist-language=Python
+pyproject.toml linguist-generated=true
+
+# Go
+*.go linguist-language=Go
+go.mod linguist-generated=true
+go.sum linguist-generated=true
+
+# JS/TS
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+package-lock.json linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
+
+# Rust
+*.rs linguist-language=Rust
+Cargo.lock linguist-generated=true
+
+# Generated
+docs/api/ linguist-generated=true
+dist/ linguist-generated=true
+build/ linguist-generated=true
+*.min.js linguist-generated=true
+*.min.css linguist-generated=true
+*.pb.go linguist-generated=true
+*_pb2.py linguist-generated=true
+*_pb2_grpc.py linguist-generated=true
+
+# Vendored
+/vendor/ linguist-vendored
+/node_modules/ linguist-vendored

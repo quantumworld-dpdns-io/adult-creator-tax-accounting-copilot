@@ -6,6 +6,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
 
 # Build artifacts
 dist/
@@ -13,12 +15,59 @@ build/
 __pycache__/
 *.pyc
 *.class
+*.o
+*.so
+target/
+.next/
+.turbo/
+*.tsbuildinfo
 
 # Dependencies
 node_modules/
 vendor/
+.pnp.*
 
 # Environment
 .env
 .env.*
 !.env.example
+auto_commit.sh
+
+# Test artifacts
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+*.lcov
+
+# IaC state
+.terraform/
+.pulumi/
+
+# K8s secrets
+*.kubeconfig
+kubeconfig
+
+# Quantum
+*.qasm
+*.qasm3
+*.qpy
+
+# ZK
+proofs/
+target/
+
+# OS
+.Trash-*
+
+# Caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.eslintcache
+.golangci-lint-cache/
+
+# OS Build
+*.dSYM
+*.dwarf
+*.pdb

@@ -1,0 +1,75 @@
+# Default values for api-gateway.
+replicaCount: 2
+
+image:
+  repository: ghcr.io/quantumworld-dpdns-io/api-gateway
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+imagePullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  hosts:
+    - host: api.copilot.example
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: copilot-tls
+      hosts:
+        - api.copilot.example
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+env:
+  - name: LOG_LEVEL
+    value: info
+  - name: OAUTH2_ISSUER
+    value: https://auth.copilot.example
+  - name: OAUTH2_AUDIENCE
+    value: copilot-api
+
+serviceAccount:
+  create: true
+  annotations: {}
+
+podAnnotations: {}
