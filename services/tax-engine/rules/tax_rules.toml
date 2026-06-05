@@ -1,0 +1,45 @@
+# tax-engine rules
+
+# US Federal — illustrative. Production must read from IRS Publication 17 / 17.pdf
+[US]
+brackets = [
+  { "min": 0,       "max": 11600,  "rate": 0.10 },
+  { "min": 11600,   "max": 47150,  "rate": 0.12 },
+  { "min": 47150,   "max": 100525, "rate": 0.22 },
+  { "min": 100525,  "max": 191950, "rate": 0.24 },
+  { "min": 191950,  "max": 243725, "rate": 0.32 },
+  { "min": 243725,  "max": 609350, "rate": 0.35 },
+  { "min": 609350,  "max": null,   "rate": 0.37 },
+]
+self_employment_tax = 0.153
+standard_deduction_2026 = 14600
+
+# 1099-K state thresholds
+[US.CA_1099K]
+threshold_usd = 600
+lookback_years = 1
+
+# EU VAT MOSS — illustrative. Production must read from EU OJ.
+[EU]
+default_rate = 0.20
+member_state_rates = { DE = 0.19, FR = 0.20, ES = 0.21, IT = 0.22, NL = 0.21 }
+
+# UK MTD
+[UK]
+basic_rate = 0.20
+higher_rate = 0.40
+personal_allowance_2026 = 12570
+
+# Canada
+[CA]
+federal_rate = 0.15
+provinces = { ON = 0.0505, BC = 0.0506, AB = 0.10, QC = 0.14 }
+
+# Australia
+[AU]
+resident_rate = 0.19
+
+# Japan
+[JP]
+national_rate = 0.20
+reconstruction_rate = 0.003
