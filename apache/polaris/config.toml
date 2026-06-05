@@ -1,0 +1,41 @@
+# Apache Polaris catalog (Iceberg)
+#
+# Polaris is the central Iceberg REST catalog. Multi-engine registration
+# means the same tables are visible to Trino, Spark, and DataFusion.
+
+[tool]
+name = "polaris"
+
+[deploy]
+chart = "polaris"
+version = "0.9.0"
+namespace = "copilot"
+
+[database]
+type = "postgres"
+host = "postgres"
+port = 5432
+database = "polaris"
+user = "polaris"
+
+[storage]
+type = "s3"
+endpoint = "minio:9000"
+bucket = "copilot-data"
+region = "us-east-1"
+path_style = true
+
+[principals]
+- name: root
+  role: [catalog_admin, principal_admin]
+- name: trino
+  role: [catalog_user]
+- name: spark
+  role: [catalog_user]
+- name: datafusion
+  role: [catalog_user]
+
+[tenants]
+- name: copilot
+  namespace: ["tax", "payouts", "crypto", "audit"]
+  region: ["us", "eu"]

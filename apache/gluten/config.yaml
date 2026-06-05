@@ -1,0 +1,37 @@
+# Apache Gluten (Spark acceleration)
+#
+# Gluten offloads Spark SQL execution to Velox (C++ columnar engine).
+# This file configures the offload policy for the tax/payouts Iceberg tables.
+
+spark:
+  app_name: copilot-gluten
+  master: k8s://
+  conf:
+    spark.gluten.enabled: "true"
+    spark.plugins: "io.glutenproject.gluten.GlutenPlugin"
+    spark.gluten.sql.columnar.backend: "velox"
+    spark.gluten.sql.columnar.libpath: "/opt/gluten/lib/libgluten.so"
+    spark.sql.catalogImplementation: "iceberg"
+    spark.sql.catalog.copilot: "org.apache.iceberg.spark.SparkCatalog"
+    spark.sql.catalog.copilot.catalog-impl: "org.apache.iceberg.rest.RESTCatalog"
+    spark.sql.catalog.copilot.uri: "http://polaris:8181/api/catalog"
+    spark.sql.catalog.copilot.warehouse: "s3://copilot-data/warehouse"
+
+workloads:
+  - name: payouts-aggregation
+    table: "copilot.tax.payouts"
+    schedule: "0 2 * * *"  # daily 02:00 UTC
+    sql: |
+      SELECT creator_id, SUM(gross) AS gross, SUM(fees) AS fees, SUM(net) AS net
+      FROM copilot.tax.payouts
+      WHERE ts >= current_date - interval 30 days
+      GROUP BY creator_id
+
+  - name: crypto-fifo-batch
+    table: "copilot.crypto.dispositions"
+    schedule: "0 3 * * *"
+    sql: |
+      SELECT creator_id, asset, SUM(gain) AS realized_gain
+      FROM copilot.crypto.dispositions
+      WHERE year = year(current_date)
+      GROUP BY creator_id, asset

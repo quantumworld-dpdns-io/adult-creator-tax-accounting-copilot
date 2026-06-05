@@ -1,0 +1,37 @@
+-- Apache Teaclave confidential-compute attestation policy
+--
+-- Defines which functions run inside an SGX/TDX enclave, who can invoke
+-- them, and the remote-attestation policy.
+
+function: "decrypt_invoice_pdf"
+  enclave:
+    type: SGX
+    min_sgx_version: 2
+    required:
+      - "MRENCLAVE"
+      - "MRSIGNER"
+      - "ISVPRODID"
+  invokers:
+    - principal: "svc/tax-engine"
+      attestations_required: [dcap, ias]
+  data:
+    inputs:
+      - "s3://copilot-data/invoices/**"
+    outputs:
+      - "s3://copilot-decrypted/**"
+    max_size: "100MiB"
+  audit:
+    log_to: "audit-log://quantum-safe"
+    signature: "Dilithium-5"
+
+function: "kyc_ocr"
+  enclave:
+    type: SGX
+  invokers:
+    - principal: "svc/kyc"
+  data:
+    inputs:
+      - "s3://copilot-data/kyc-documents/**"
+    max_size: "20MiB"
+  audit:
+    log_to: "audit-log://quantum-safe"
