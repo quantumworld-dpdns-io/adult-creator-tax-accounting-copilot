@@ -1,0 +1,9 @@
+{
+  "id": "evt_2026_01_15_alice_001",
+  "type": "payout.paid",
+  "platform": "onlyfans",
+  "creator_id": "alice",
+  "amount": { "gross": "5000.00", "fees": "100.00", "net": "4900.00", "currency": "USD" },
+  "ts": "2026-01-15T12:34:56Z",
+  "idempotency_key": "onlyfans:2026-01-15:tx_abc123"
+}
