@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "adult-creator-tax-copilot": {
+      "command": "python",
+      "args": ["-m", "mcp_server_python"],
+      "cwd": "services/mcp-server-python",
+      "env": {
+        "MCP_TRANSPORT": "stdio",
+        "LEDGER_GRPC_URL": "localhost:50051",
+        "TAX_ENGINE_URL": "http://tax-engine:8000",
+        "ZK_VERIFIER_URL": "https://zk.copilot/verify"
+      }
+    }
+  }
+}
