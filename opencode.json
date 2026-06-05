@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": "anthropic",
+  "model": "claude-3.5-sonnet",
+  "agents": {
+    "tax-reviewer": {
+      "description": "Reviews changes to tax-rule code",
+      "model": "claude-3.5-sonnet",
+      "tools": ["read", "grep", "glob", "bash"]
+    },
+    "security-reviewer": {
+      "description": "Reviews against OWASP Top-10",
+      "model": "claude-3.5-sonnet",
+      "tools": ["read", "grep", "glob", "bash"]
+    },
+    "quantum-auditor": {
+      "description": "Reviews quantum circuit changes",
+      "model": "claude-3.5-sonnet",
+      "tools": ["read", "grep", "glob", "bash"]
+    }
+  }
+}
