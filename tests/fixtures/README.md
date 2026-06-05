@@ -1,0 +1,1 @@
+// Generic Rust test fixtures
