@@ -1,0 +1,19 @@
+# Hermes Agent configuration
+
+agent:
+  id: hermes
+  name: Adult Creator Tax Copilot Agent
+  version: 0.1.0
+  mcp_servers:
+    - path: .mcp.json
+  skills:
+    - .skills/
+  memory:
+    type: redis
+    url: ${REDIS_URL}
+  budget:
+    daily_usd: 100
+    per_task_usd: 5
+  observability:
+    otel: true
+    phoenix: true
