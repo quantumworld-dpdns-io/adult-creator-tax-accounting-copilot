@@ -54,8 +54,8 @@ func main() {
 		log.Fatal("usage: crypto-tax -i tx.jsonl -o result.csv -m FIFO")
 	}
 
-	txs := readTx(*in)
-	results := matchLots(txs, *method)
+	txs := ReadTx(*in)
+	results := MatchLots(txs, *method)
 
 	f, err := os.Create(*out)
 	if err != nil {
