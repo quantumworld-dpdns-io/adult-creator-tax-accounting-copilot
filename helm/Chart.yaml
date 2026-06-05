@@ -1,0 +1,119 @@
+# Helm umbrella chart for the Adult Creator Tax & Accounting Copilot
+apiVersion: v2
+name: adult-creator-copilot
+description: Quantum-enhanced, polyglot, multi-cloud, OWASP-first tax & accounting copilot
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+icon: https://raw.githubusercontent.com/quantumworld-dpdns-io/adult-creator-tax-accounting-copilot/main/docs/icon.png
+home: https://github.com/quantumworld-dpdns-io/adult-creator-tax-accounting-copilot
+sources:
+  - https://github.com/quantumworld-dpdns-io/adult-creator-tax-accounting-copilot
+maintainers:
+  - name: quantumworld-dpdns-io
+    email: maintainers@quantumworld-dpdns-io.example
+keywords:
+  - tax
+  - compliance
+  - quantum
+  - zk
+  - wasm
+  - federated-learning
+  - multi-cloud
+  - polyglot
+  - owasp
+
+dependencies:
+  - name: api-gateway
+    version: 0.1.0
+    condition: api-gateway.enabled
+  - name: tax-engine
+    version: 0.1.0
+    condition: tax-engine.enabled
+  - name: ledger
+    version: 0.1.0
+    condition: ledger.enabled
+  - name: payout-aggregator
+    version: 0.1.0
+    condition: payout-aggregator.enabled
+  - name: crypto-tax
+    version: 0.1.0
+    condition: crypto-tax.enabled
+  - name: webhook-router
+    version: 0.1.0
+    condition: webhook-router.enabled
+  - name: realtime-pricing
+    version: 0.1.0
+    condition: realtime-pricing.enabled
+  - name: kyc
+    version: 0.1.0
+    condition: kyc.enabled
+  - name: consent
+    version: 0.1.0
+    condition: consent.enabled
+  - name: notification
+    version: 0.1.0
+    condition: notification.enabled
+  - name: reporting
+    version: 0.1.0
+    condition: reporting.enabled
+  - name: mcp-server
+    version: 0.1.0
+    condition: mcp-server.enabled
+  - name: ai-router
+    version: 0.1.0
+    condition: ai-router.enabled
+  - name: vllm
+    version: 0.1.0
+    condition: vllm.enabled
+  - name: ollama
+    version: 0.1.0
+    condition: ollama.enabled
+  - name: milvus
+    version: 0.1.0
+    condition: milvus.enabled
+  - name: qdrant
+    version: 0.1.0
+    condition: qdrant.enabled
+  - name: weaviate
+    version: 0.1.0
+    condition: weaviate.enabled
+  - name: trino
+    version: 0.1.0
+    condition: trino.enabled
+  - name: iceberg-polaris
+    version: 0.1.0
+    condition: iceberg-polaris.enabled
+  - name: dragonfly
+    version: 0.1.0
+    condition: dragonfly.enabled
+  - name: tetragon
+    version: 0.1.0
+    condition: tetragon.enabled
+  - name: cilium
+    version: 0.1.0
+    condition: cilium.enabled
+  - name: vault
+    version: 0.1.0
+    condition: vault.enabled
+  - name: cert-manager
+    version: 0.1.0
+    condition: cert-manager.enabled
+  - name: ingress-nginx
+    version: 0.1.0
+    condition: ingress-nginx.enabled
+  - name: keda
+    version: 0.1.0
+    condition: keda.enabled
+  - name: karpenter
+    version: 0.1.0
+    condition: karpenter.enabled
+  - name: argocd
+    version: 0.1.0
+    condition: argocd.enabled
+  - name: prometheus-stack
+    version: 0.1.0
+    condition: prometheus-stack.enabled
+  - name: phoenix
+    version: 0.1.0
+    condition: phoenix.enabled
