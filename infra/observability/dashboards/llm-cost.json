@@ -1,0 +1,29 @@
+{
+  "title": "LLM Cost Dashboard",
+  "uid": "copilot-llm-cost",
+  "tags": ["copilot", "llm", "cost"],
+  "panels": [
+    {
+      "title": "Cost per Service (USD/h)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum by (service) (rate(gen_ai_cost_usd_total[1h])) * 3600" }
+      ]
+    },
+    {
+      "title": "Cost per Model (USD/h)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum by (model) (rate(gen_ai_cost_usd_total[1h])) * 3600" }
+      ]
+    },
+    {
+      "title": "Daily Cost vs Ceiling",
+      "type": "stat",
+      "targets": [
+        { "expr": "sum(increase(gen_ai_cost_usd_total[24h]))" },
+        { "expr": "1000" }
+      ]
+    }
+  ]
+}
