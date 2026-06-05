@@ -1,0 +1,12 @@
+{"date":"2026-01-15","type":"earn","asset":"USDC","qty":5000,"cost":5000,"proceeds":0,"source":"OnlyFans"}
+{"date":"2026-02-10","type":"swap","asset":"USDC","qty":1000,"cost":0,"proceeds":1020,"source":"SushiSwap"}
+{"date":"2026-03-01","type":"airdrop","asset":"USDC","qty":500,"cost":500,"proceeds":0,"source":"Compound"}
+{"date":"2026-04-12","type":"stake","asset":"ETH","qty":2,"cost":6000,"proceeds":0,"source":"Lido"}
+{"date":"2026-05-20","type":"sell","asset":"ETH","qty":0.5,"cost":0,"proceeds":1700,"source":"Coinbase"}
+{"date":"2026-06-01","type":"yield","asset":"USDC","qty":120,"cost":120,"proceeds":0,"source":"Aave"}
+{"date":"2026-07-15","type":"sell","asset":"USDC","qty":2000,"cost":0,"proceeds":2010,"source":"Paxful"}
+{"date":"2026-08-01","type":"nft_royalty","asset":"ETH","qty":0.1,"cost":0,"proceeds":350,"source":"OpenSea"}
+{"date":"2026-09-15","type":"sell","asset":"ETH","qty":0.3,"cost":0,"proceeds":1100,"source":"Coinbase"}
+{"date":"2026-10-01","type":"yield","asset":"USDC","qty":150,"cost":150,"proceeds":0,"source":"Aave"}
+{"date":"2026-11-12","type":"sell","asset":"USDC","qty":1500,"cost":0,"proceeds":1495,"source":"Paxful"}
+{"date":"2026-12-20","type":"sell","asset":"USDC","qty":1170,"cost":0,"proceeds":1170,"source":"Paxful"}
