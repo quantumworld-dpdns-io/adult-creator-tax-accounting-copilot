@@ -1,3 +1,3 @@
-{"prev_hash":"","hash":"abc123","signature":"deadbeef","payload":{"creator_id":"alice","action":"consent_granted","ts":"2026-01-01T00:00:00Z"}}
-{"prev_hash":"abc123","hash":"def456","signature":"cafebabe","payload":{"creator_id":"alice","action":"kyc_approved","ts":"2026-01-02T00:00:00Z"}}
-{"prev_hash":"def456","hash":"789abc","signature":"baadf00d","payload":{"creator_id":"alice","action":"payout_received","amount":"5000.00","ts":"2026-01-15T00:00:00Z"}}
+{"prev_hash": "", "hash": "8e43d00810d3052fced91b1d67b8ce2cb701c6460945f80f73ba7da69182c537", "signature": "deadbeef", "payload": {"creator_id": "alice", "action": "consent_granted", "ts": "2026-01-01T00:00:00Z"}}
+{"prev_hash": "8e43d00810d3052fced91b1d67b8ce2cb701c6460945f80f73ba7da69182c537", "hash": "4148dd2c64cfccbd55c277d080142dd1f7802d407c7fa75ea168b3a63e34b514", "signature": "deadbeef", "payload": {"creator_id": "alice", "action": "kyc_approved", "ts": "2026-01-02T00:00:00Z"}}
+{"prev_hash": "4148dd2c64cfccbd55c277d080142dd1f7802d407c7fa75ea168b3a63e34b514", "hash": "daaa7bf068d6c588ebe66e3268f71666913a6c27dacad0fe71b7a3afe42b411b", "signature": "deadbeef", "payload": {"creator_id": "alice", "action": "payout_received", "amount": "5000.00", "ts": "2026-01-15T00:00:00Z"}}
