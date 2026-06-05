@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for Go services.
-FROM golang:1.22-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /src
 COPY services/mcp-server-go/go.mod services/mcp-server-go/go.sum* ./
