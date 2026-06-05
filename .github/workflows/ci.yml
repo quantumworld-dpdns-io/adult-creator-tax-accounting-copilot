@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with: { python-version: '3.12' }
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
@@ -42,7 +42,7 @@ jobs:
         service: [mcp-server-python, tax-engine]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with: { python-version: '3.12' }
       - run: pip install -e services/${{ matrix.service }}[dev]
       - run: pytest services/${{ matrix.service }} --cov --cov-fail-under=80
@@ -82,7 +82,7 @@ jobs:
       options: --privileged
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with: { python-version: '3.12' }
       - run: pip install robotframework robotframework-requests
       - run: docker compose -f docker-compose.dev.yml up -d
@@ -164,7 +164,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with: { python-version: '3.12' }
       - name: Install qiskit
         run: pip install qiskit qiskit-aer
