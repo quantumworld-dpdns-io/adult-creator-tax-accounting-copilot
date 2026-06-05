@@ -74,7 +74,7 @@ func main() {
 	}
 }
 
-func readTx(p string) []Tx {
+func ReadTx(p string) []Tx {
 	f, err := os.Open(p)
 	if err != nil {
 		log.Fatal(err)
@@ -93,7 +93,7 @@ func readTx(p string) []Tx {
 	return txs
 }
 
-func matchLots(txs []Tx, method string) []Result {
+func MatchLots(txs []Tx, method string) []Result {
 	lots := map[string][]Lot{}
 	var out []Result
 	for _, tx := range txs {
