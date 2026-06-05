@@ -1,0 +1,29 @@
+---
+- name: PostgreSQL tuning
+  hosts: db_servers
+  become: true
+  tasks:
+    - name: Install postgres
+      ansible.builtin.apt:
+        name: [postgresql-16, postgresql-contrib]
+        state: present
+        update_cache: true
+
+    - name: Configure postgresql.conf
+      ansible.builtin.copy:
+        dest: /etc/postgresql/16/main/postgresql.conf
+        content: |
+          shared_buffers = 2GB
+          work_mem = 64MB
+          maintenance_work_mem = 512MB
+          effective_cache_size = 6GB
+          max_connections = 200
+          wal_compression = on
+          ssl = on
+      notify: Restart postgres
+
+  handlers:
+    - name: Restart postgres
+      ansible.builtin.systemd:
+        name: postgresql
+        state: restarted
