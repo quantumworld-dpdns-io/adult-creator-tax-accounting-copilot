@@ -2,14 +2,171 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.22' }
+      - uses: dtolnay/rust-toolchain@stable
+      - run: pip install ruff mypy black
+      - run: pip install pre-commit && pre-commit run --all-files --show-diff-on-failure
+        continue-on-error: false
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        service: [mcp-server-python, tax-engine]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -e services/${{ matrix.service }}[dev]
+      - run: pytest services/${{ matrix.service }} --cov --cov-fail-under=80
+
+  go-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        service: [mcp-server-go, tax-engine, ledger, kyc, crypto-tax]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.22' }
+      - run: cd services/${{ matrix.service }} && go test -race -coverprofile=coverage.out -covermode=atomic ./...
+      - run: cd services/${{ matrix.service }} && go vet ./...
+
+  rust-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        service: [mcp-server-rust, realtime-pricing]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-wasi }
+      - run: cd services/${{ matrix.service }} && cargo fmt --check
+      - run: cd services/${{ matrix.service }} && cargo clippy --all-targets -- -D warnings
+      - run: cd services/${{ matrix.service }} && cargo test
+
+  robot-owasp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    container:
+      image: mcr.microsoft.com/playwright:v1.47.0-jammy
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install robotframework robotframework-requests
+      - run: docker compose -f docker-compose.dev.yml up -d
+      - run: sleep 30
+      - run: robot --variable ENV:ci --outputdir tests/robot/output tests/robot/owasp
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: robot-owasp-report
+          path: tests/robot/output/
+
+  sec:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ghcr.io/quantumworld-dpdns-io/api-gateway:latest
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+      - name: CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python, javascript, go, rust
+      - uses: github/codeql-action/analyze@v3
+
+  build-images:
+    needs: [lint, unit-tests, go-tests, rust-tests]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        service: [api-gateway, tax-engine, ledger, mcp-server]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile.${{ matrix.service == 'mcp-server' && 'python' || matrix.service == 'api-gateway' && 'go' || 'python' }}
+          push: true
+          tags: ghcr.io/quantumworld-dpdns-io/${{ matrix.service }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true
+      - name: Cosign sign
+        uses: sigstore/cosign-installer@v3
+      - run: cosign sign --yes ghcr.io/quantumworld-dpdns-io/${{ matrix.service }}@${{ steps.build.outputs.digest }}
+        env:
+          COSIGN_EXPERIMENTAL: '1'
+
+  helm-package:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Placeholder build step
-        run: echo "Add your build/test commands here"
+      - uses: azure/setup-helm@v4
+        with: { version: v3.16.0 }
+      - run: |
+          helm dependency update helm/
+          helm package helm/ -d helm/dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: helm-chart
+          path: helm/dist/
+
+  quantum-bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install qiskit
+        run: pip install qiskit qiskit-aer
+      - run: pip install pytest pytest-benchmark
+      - run: pytest quantum/bench -v --benchmark-disable-gc
