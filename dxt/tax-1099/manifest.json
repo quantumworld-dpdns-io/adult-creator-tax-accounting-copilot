@@ -1,0 +1,39 @@
+{
+  "manifest_version": "0.2.0",
+  "name": "tax-1099",
+  "display_name": "Tax 1099 Generator",
+  "version": "1.0.0",
+  "description": "Generate US 1099 tax forms for adult creator payouts.",
+  "author": {
+    "name": "quantumworld-dpdns-io"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/quantumworld-dpdns-io/adult-creator-tax-accounting-copilot",
+  "server": {
+    "type": "python",
+    "entry_point": "mcp_server_python.__main__:main",
+    "mcp_config": {
+      "command": "python",
+      "args": ["-m", "mcp_server_python"]
+    }
+  },
+  "tools": [
+    "mcp:get_payouts",
+    "mcp:compute_tax_estimate",
+    "mcp:file_1099"
+  ],
+  "skills": [".skills/tax-1099/SKILL.md"],
+  "permissions": [
+    "filesystem:read:/data/payouts",
+    "filesystem:write:/data/1099",
+    "network:out:*.amazonaws.com"
+  ],
+  "icon": "icon.png",
+  "screenshots": [],
+  "categories": ["finance", "tax", "productivity"],
+  "keywords": ["tax", "1099", "creator", "adult"],
+  "requirements": {
+    "python": ">=3.12",
+    "memory_mb": 256
+  }
+}
