@@ -44,17 +44,17 @@ func TestMatchLotsLIFO(t *testing.T) {
 
 func TestMatchLotsHIFO(t *testing.T) {
 	txs := []cryptotax.Tx{
-		{Date: "2025-01-01", Type: "earn", Asset: "USDC", Qty: 100, Cost: 100},
-		{Date: "2025-03-01", Type: "earn", Asset: "USDC", Qty: 50, Cost: 25}, // cheaper
+		{Date: "2025-01-01", Type: "earn", Asset: "USDC", Qty: 100, Cost: 100}, // $1/unit
+		{Date: "2025-03-01", Type: "earn", Asset: "USDC", Qty: 50, Cost: 25},   // $0.50/unit
 		{Date: "2025-04-01", Type: "sell", Asset: "USDC", Qty: 30, Proceeds: 60},
 	}
 	res := cryptotax.MatchLots(txs, "HIFO")
 	if len(res) != 1 {
 		t.Fatalf("expected 1 result, got %d", len(res))
 	}
-	// HIFO picks the cheapest lot first.
-	if res[0].Basis != 15 {
-		t.Fatalf("expected basis 15, got %f", res[0].Basis)
+	// HIFO picks the highest cost-per-unit first: 30 qty * $1 = $30.
+	if res[0].Basis != 30 {
+		t.Fatalf("expected basis 30, got %f", res[0].Basis)
 	}
 }
 
