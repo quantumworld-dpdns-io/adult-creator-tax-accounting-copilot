@@ -1,0 +1,16 @@
+# 1099 form data fixtures
+
+creator,platform,gross,fees,net,date
+alice,OnlyFans,5000.00,100.00,4900.00,2026-01-15
+alice,Fansly,2500.00,50.00,2450.00,2026-02-10
+alice,Chaturbate,1200.00,200.00,1000.00,2026-03-05
+alice,Stripe,3000.00,87.00,2913.00,2026-03-15
+alice,OnlyFans,4000.00,80.00,3920.00,2026-04-12
+alice,Coinbase Commerce,1500.00,15.00,1485.00,2026-05-20
+alice,OnlyFans,3500.00,70.00,3430.00,2026-06-10
+alice,Fansly,1800.00,36.00,1764.00,2026-07-15
+alice,Stripchat,800.00,80.00,720.00,2026-08-22
+alice,ManyVids,2200.00,110.00,2090.00,2026-09-05
+alice,OnlyFans,4200.00,84.00,4116.00,2026-10-18
+alice,LoyalFans,1600.00,32.00,1568.00,2026-11-12
+alice,OnlyFans,5000.00,100.00,4900.00,2026-12-15
