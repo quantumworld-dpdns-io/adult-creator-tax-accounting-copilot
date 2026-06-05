@@ -1,0 +1,19 @@
+---
+- name: Cilium install
+  hosts: masters
+  become: true
+  tasks:
+    - name: Install Cilium CLI
+      ansible.builtin.get_url:
+        url: https://github.com/cilium/cilium-cli/releases/download/v0.16.0/cilium-linux-amd64.tar.gz
+        dest: /usr/local/bin/cilium
+        mode: "0755"
+
+    - name: Install Cilium
+      ansible.builtin.command: cilium install --version 1.16.0 --set kubeProxyReplacement=strict --set bpf.masquerade=true
+      changed_when: true
+
+    - name: Install Tetragon
+      ansible.builtin.command: cilium hubble enable --relay
+      changed_when: true
+      ignore_errors: true
