@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: actions/setup-node@v4
@@ -41,7 +41,7 @@ jobs:
       matrix:
         service: [mcp-server-python, tax-engine]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install -e services/${{ matrix.service }}[dev]
@@ -54,7 +54,7 @@ jobs:
       matrix:
         service: [mcp-server-go, tax-engine, ledger, kyc, crypto-tax]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with: { go-version: '1.22' }
       - run: cd services/${{ matrix.service }} && go test -race -coverprofile=coverage.out -covermode=atomic ./...
@@ -67,7 +67,7 @@ jobs:
       matrix:
         service: [mcp-server-rust, realtime-pricing]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with: { targets: wasm32-wasi }
       - run: cd services/${{ matrix.service }} && cargo fmt --check
@@ -81,7 +81,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.47.0-jammy
       options: --privileged
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install robotframework robotframework-requests
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@0.24.0
         with:
@@ -120,7 +120,7 @@ jobs:
       matrix:
         service: [api-gateway, tax-engine, ledger, mcp-server]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -148,7 +148,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: azure/setup-helm@v4
         with: { version: v3.16.0 }
       - run: |
@@ -163,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - name: Install qiskit

@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: scaleway-prod
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pulumi/setup-pulumi@v2
         with: { version: 3.140.0 }
       - run: cd infra/pulumi/scaleway && pulumi up --yes --stack prod
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: exoscale-prod
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pulumi/setup-pulumi@v2
         with: { version: 3.140.0 }
       - run: cd infra/pulumi/exoscale && pulumi up --yes --stack prod
