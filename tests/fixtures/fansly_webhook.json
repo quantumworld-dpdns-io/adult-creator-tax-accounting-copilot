@@ -1,0 +1,8 @@
+{
+  "id": "evt_2026_02_10_bob_001",
+  "type": "fan.subscribed",
+  "platform": "fansly",
+  "creator_id": "bob",
+  "amount": { "gross": "2500.00", "fees": "50.00", "net": "2450.00", "currency": "USD" },
+  "ts": "2026-02-10T08:21:00Z"
+}
