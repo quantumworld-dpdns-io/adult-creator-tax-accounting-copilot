@@ -1,0 +1,50 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-pods
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: deny-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Privileged containers are forbidden."
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  privileged: "false|nil"
+                  allowPrivilegeEscalation: "false|nil"
+                  capabilities:
+                    drop:
+                      - ALL
+    - name: read-only-root-fs
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "readOnlyRootFilesystem is required."
+        pattern:
+          spec:
+            containers:
+              - securityContext:
+                  readOnlyRootFilesystem: true
+    - name: require-run-as-non-root
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "runAsNonRoot=true is required."
+        pattern:
+          spec:
+             =(securityContext):
+                =(runAsNonRoot): true
