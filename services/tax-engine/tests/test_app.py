@@ -19,14 +19,14 @@ def test_estimate_us_low_bracket() -> None:
             "creator_id": "alice",
             "jurisdiction": "US",
             "year": 2026,
-            "payouts": [{"platform": "OnlyFans", "currency": "USD", "gross": 10000.0, "fees": 200.0, "net": 9800.0}],
+            "payouts": [{"platform": "OnlyFans", "currency": "USD", "gross": 20000.0, "fees": 400.0, "net": 19600.0}],
         },
     )
     assert r.status_code == 200
     body = r.json()
     assert body["bracket"] == "12%"
     assert body["effective_rate"] == 0.12
-    assert body["estimated_tax_usd"] == 10000.0 * 0.12
+    assert body["estimated_tax_usd"] == 20000.0 * 0.12
 
 
 def test_estimate_uk_basic_rate() -> None:
