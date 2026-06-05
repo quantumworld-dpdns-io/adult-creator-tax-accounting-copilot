@@ -1,0 +1,59 @@
+# Apache Gravitino federated metadata lake
+#
+# Gravitino is the catalog of catalogs. We register Postgres, S3-Iceberg,
+# Kafka, and our MCP-tool registry as Gravitino catalogs.
+
+metalake:
+  name: copilot
+  comment: "Adult Creator Tax & Accounting Copilot — federated metadata"
+
+catalogs:
+  - name: pg-copilot
+    type: relational
+    provider: jdbc-postgresql
+    uri: "jdbc:postgresql://postgres:5432/copilot"
+    properties:
+      jdbc.username: copilot
+      jdbc.password: ${POSTGRES_PASSWORD}
+
+  - name: iceberg-tax
+    type: lakehouse
+    provider: iceberg-rest
+    uri: "http://polaris:8181/api/catalog"
+    properties:
+      warehouse: s3://copilot-data/warehouse
+      s3.endpoint: http://minio:9000
+      s3.access-key: ${S3_ACCESS_KEY}
+      s3.secret-key: ${S3_SECRET_KEY}
+      s3.region: us-east-1
+
+  - name: kafka-copilot
+    type: messaging
+    provider: kafka
+    uri: "kafka:9092"
+    properties:
+      bootstrap.servers: "kafka:9092"
+
+  - name: mcp-tools
+    type: ai
+    provider: custom
+    uri: "http://mcp-server:9000"
+
+tags:
+  - name: PII
+    applies_to: [column]
+    description: "Contains PII; restrict access via OPA"
+
+  - name: TAX
+    applies_to: [column, table]
+    description: "Tax-grade data; require 7-year retention"
+
+access_control:
+  policies:
+    - name: deny-pii-to-llm
+      effect: deny
+      principals: ["*"]
+      actions: ["SELECT"]
+      resources: ["pg-copilot.public.creators.email"]
+      condition:
+        principal.role != "compliance-officer"
