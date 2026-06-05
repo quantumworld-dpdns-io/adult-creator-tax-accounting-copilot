@@ -1,0 +1,51 @@
+name: Multi-Cloud Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  zeabur:
+    runs-on: ubuntu-latest
+    environment: zeabur-prod
+    steps:
+      - name: Trigger Zeabur webhook
+        run: |
+          curl -fsSL -X POST "${{ secrets.ZEABUR_WEBHOOK }}" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"${{ github.ref_name }}"}'
+
+  northflank:
+    runs-on: ubuntu-latest
+    environment: northflank-prod
+    steps:
+      - name: Trigger Northflank deploy
+        run: |
+          curl -fsSL -X POST "${{ secrets.NORTHFLANK_WEBHOOK }}" \
+            -H "Authorization: Bearer ${{ secrets.NORTHFLANK_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"${{ github.ref_name }}"}'
+
+  scaleway:
+    runs-on: ubuntu-latest
+    environment: scaleway-prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pulumi/setup-pulumi@v2
+        with: { version: 3.140.0 }
+      - run: cd infra/pulumi/scaleway && pulumi up --yes --stack prod
+
+  exoscale:
+    runs-on: ubuntu-latest
+    environment: exoscale-prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pulumi/setup-pulumi@v2
+        with: { version: 3.140.0 }
+      - run: cd infra/pulumi/exoscale && pulumi up --yes --stack prod
