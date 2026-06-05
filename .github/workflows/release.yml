@@ -66,7 +66,7 @@ jobs:
             tax-engine) echo "dockerfile=docker/Dockerfile.python" >> $GITHUB_OUTPUT ;;
           esac
       - name: Build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ${{ steps.df.outputs.dockerfile }}
