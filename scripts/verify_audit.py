@@ -1,17 +1,18 @@
-// scripts/verify_audit.py
-// Offline verifier for the quantum-safe audit log.
-//
-// Usage:
-//   python scripts/verify_audit.py --log path/to/audit.jsonl
-//
-// The audit-log entries are expected to have:
-//   - prev_hash: BLAKE3 hex
-//   - hash:      BLAKE3 hex
-//   - signature: Dilithium-5 hex
-//   - payload:   any JSON
-//
-// This script verifies the hash chain only. The Dilithium signature
-// check is delegated to `oqs` (liboqs).
+#!/usr/bin/env python3
+"""Offline verifier for the quantum-safe audit log.
+
+Usage:
+  python scripts/verify_audit.py --log path/to/audit.jsonl
+
+The audit-log entries are expected to have:
+  - prev_hash: BLAKE3 hex
+  - hash:      BLAKE3 hex
+  - signature: Dilithium-5 hex
+  - payload:   any JSON
+
+This script verifies the hash chain only. The Dilithium signature
+check is delegated to `oqs` (liboqs).
+"""
 
 from __future__ import annotations
 
