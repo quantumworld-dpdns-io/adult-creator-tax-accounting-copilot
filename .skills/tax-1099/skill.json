@@ -1,0 +1,45 @@
+{
+  "name": "tax-1099",
+  "description": "Generate US 1099 tax forms (1099-NEC, 1099-MISC, 1099-K) for an adult content creator's aggregated payouts.",
+  "version": "1.0.0",
+  "author": "quantumworld-dpdns-io",
+  "license": "MIT",
+  "tags": ["tax", "us", "1099"],
+  "inputs": [
+    {
+      "name": "creator_id",
+      "type": "string",
+      "required": true,
+      "description": "The creator's unique identifier."
+    },
+    {
+      "name": "year",
+      "type": "integer",
+      "required": true,
+      "description": "Tax year, e.g. 2026."
+    },
+    {
+      "name": "form",
+      "type": "string",
+      "enum": ["1099-NEC", "1099-MISC", "1099-K"],
+      "default": "1099-NEC",
+      "description": "Which 1099 form to generate."
+    }
+  ],
+  "outputs": [
+    { "name": "pdf_url",  "type": "string" },
+    { "name": "signed",   "type": "boolean" },
+    { "name": "signature_algo", "type": "string", "default": "Dilithium-5" }
+  ],
+  "tools_required": [
+    "mcp:get_payouts",
+    "mcp:compute_tax_estimate"
+  ],
+  "steps": [
+    "1. Call get_payouts for the year",
+    "2. Filter by 1099-NEC threshold ($600 in 2026)",
+    "3. Generate PDF via svc/tax-engine",
+    "4. Sign with Dilithium-5",
+    "5. Upload to S3 with quantum-safe envelope"
+  ]
+}
