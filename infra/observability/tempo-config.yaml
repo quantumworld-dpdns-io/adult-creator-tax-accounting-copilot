@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-config
+  namespace: copilot
+data:
+  tempo.yaml: |
+    server:
+      http_listen_port: 3200
+    distributor:
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: "0.0.0.0:4317"
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        pool:
+          max_workers: 100
+    compactor:
+      compaction:
+        block_retention: 48h
